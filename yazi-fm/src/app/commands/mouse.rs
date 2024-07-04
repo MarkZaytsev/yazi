@@ -27,17 +27,18 @@ impl App {
 			return;
 		}
 
-		if layout.current.contains(position) {
-			self.mouse_do(components::Current::mouse, event, Some(layout.current));
-		} else if layout.preview.contains(position) {
-			self.mouse_do(components::Preview::mouse, event, Some(layout.preview));
-		} else if layout.parent.contains(position) {
-			self.mouse_do(components::Parent::mouse, event, Some(layout.parent));
-		} else if layout.header.contains(position) {
-			self.mouse_do(components::Header::mouse, event, Some(layout.header));
-		} else if layout.status.contains(position) {
-			self.mouse_do(components::Status::mouse, event, Some(layout.status));
-		}
+		// TODO
+		// if layout.current.contains(position) {
+		// 	self.mouse_do(components::Current::mouse, event, Some(layout.current));
+		// } else if layout.preview.contains(position) {
+		// 	self.mouse_do(components::Preview::mouse, event, Some(layout.preview));
+		// } else if layout.parent.contains(position) {
+		// 	self.mouse_do(components::Parent::mouse, event, Some(layout.parent));
+		// } else if layout.header.contains(position) {
+		// 	self.mouse_do(components::Header::mouse, event, Some(layout.header));
+		// } else if layout.status.contains(position) {
+		// 	self.mouse_do(components::Status::mouse, event, Some(layout.status));
+		// }
 	}
 
 	fn mouse_do(
@@ -49,7 +50,7 @@ impl App {
 		if matches!(event.kind, MouseEventKind::Down(_) if MANAGER.mouse_events.draggable()) {
 			let evt = yazi_plugin::bindings::MouseEvent::cast(&LUA, event);
 			if let (Ok(evt), Ok(root)) = (evt, LUA.globals().raw_get::<_, Table>("Root")) {
-				root.raw_set("drag_start", evt).ok();
+				root.raw_set("_drag_start", evt).ok();
 			}
 		}
 
@@ -59,7 +60,7 @@ impl App {
 		}
 
 		if let Err(e) = Lives::scope(&self.cx, move |_| f(event)) {
-			error!("{:?}", e);
+			error!("{e}");
 		}
 	}
 }

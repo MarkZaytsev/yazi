@@ -1,8 +1,4 @@
-Folder = {
-	PARENT = 0,
-	CURRENT = 1,
-	PREVIEW = 2,
-}
+Folder = {}
 
 function Folder:linemode(area, files)
 	local mode = cx.active.conf.linemode
@@ -74,19 +70,4 @@ function Folder:markers(area, markers)
 
 	append(last)
 	return elements
-end
-
-function Folder:by_kind(kind)
-	if kind == self.PARENT then
-		return cx.active.parent
-	elseif kind == self.CURRENT then
-		return cx.active.current
-	elseif kind == self.PREVIEW then
-		return cx.active.preview.folder
-	end
-end
-
-function Folder:window(kind)
-	local folder = self:by_kind(kind)
-	return folder and folder.window
 end

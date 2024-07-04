@@ -54,13 +54,15 @@ impl Lives {
 
 			let ret = f(scope)?;
 
-			LAYOUT.store(Arc::new(yazi_config::Layout {
-				header:  *globals.raw_get::<_, Table>("Header")?.raw_get::<_, RectRef>("area")?,
-				parent:  *globals.raw_get::<_, Table>("Parent")?.raw_get::<_, RectRef>("area")?,
-				current: *globals.raw_get::<_, Table>("Current")?.raw_get::<_, RectRef>("area")?,
-				preview: *globals.raw_get::<_, Table>("Preview")?.raw_get::<_, RectRef>("area")?,
-				status:  *globals.raw_get::<_, Table>("Status")?.raw_get::<_, RectRef>("area")?,
-			}));
+			// TODO
+			// LAYOUT.store(Arc::new(yazi_config::Layout {
+			// 	header:  *globals.raw_get::<_, Table>("Header")?.raw_get::<_,
+			// RectRef>("_area")?, 	parent:  *globals.raw_get::<_,
+			// Table>("Parent")?.raw_get::<_, RectRef>("_area")?, 	current: *globals.
+			// raw_get::<_, Table>("Current")?.raw_get::<_, RectRef>("_area")?, 	preview:
+			// *globals.raw_get::<_, Table>("Preview")?.raw_get::<_, RectRef>("_area")?,
+			// 	status:  *globals.raw_get::<_, Table>("Status")?.raw_get::<_,
+			// RectRef>("_area")?, }));
 
 			Ok(ret)
 		});

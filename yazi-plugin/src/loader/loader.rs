@@ -65,10 +65,11 @@ impl Loader {
 		}
 
 		let t: Table = match self.read().get(name) {
-			Some(b) => LUA.load(b.as_ref()).call(())?,
+			Some(b) => LUA.load(b.as_ref()).set_name(name).call(())?,
 			None => Err(format!("plugin `{name}` not found").into_lua_err())?,
 		};
 
+		// TODO: rename to `_id`
 		t.raw_set("_name", LUA.create_string(name)?)?;
 		loaded.raw_set(name, t.clone())?;
 		Ok(t)

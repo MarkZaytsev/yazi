@@ -1,18 +1,25 @@
 Preview = {
-	area = ui.Rect.default,
+	_id = "preview",
 }
 
-function Preview:render(area)
-	self.area = area
-	return {}
+function Preview:new(area, tab)
+	return setmetatable({
+		_area = area,
+		_tab = tab,
+		_folder = tab.preview.folder,
+	}, { __index = self })
 end
 
+function Preview:render() return {} end
+
+-- Mouse events
 function Preview:click(event, up)
 	if up or not event.is_left then
 		return
 	end
 
-	local window = Folder:window(Folder.PREVIEW) or {}
+	-- TODO
+	local window = self._folder and self._folder.window or {}
 	if window[event.y] then
 		ya.manager_emit("reveal", { window[event.y].url })
 	else
