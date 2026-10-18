@@ -39,7 +39,7 @@ impl Actor for Inspect {
 			};
 
 			// Stop the app and clear the terminal
-			AppProxy::stop().await;
+			AppProxy::stop(false).await;
 			writeln!(TTY.writer(), "{}", EraseDisplay::All).ok();
 
 			// Print the buffered logs

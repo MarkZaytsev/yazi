@@ -12,14 +12,14 @@ impl AppProxy {
 		rx.recv().await;
 	}
 
-	pub async fn stop() {
+	pub async fn stop(alt_screen: bool) {
 		let (tx, mut rx) = mpsc::unbounded_channel();
-		emit!(Call(relay!(app:stop).with_replier(tx)));
+		emit!(Call(relay!(app:stop).with("alt_screen", alt_screen).with_replier(tx)));
 		rx.recv().await;
 	}
 
-	pub fn stop_with(replier: Option<Replier>) {
-		let mut action = relay!(app:stop);
+	pub fn stop_with(alt_screen: bool, replier: Option<Replier>) {
+		let mut action = relay!(app:stop).with("alt_screen", alt_screen);
 		if let Some(replier) = replier {
 			action = action.with_replier(replier);
 		}

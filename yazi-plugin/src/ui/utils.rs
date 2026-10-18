@@ -26,7 +26,7 @@ pub(super) fn area(lua: &Lua) -> mlua::Result<Value> {
 }
 
 pub(super) fn hide(lua: &Lua) -> mlua::Result<Value> {
-	let f = lua.create_async_function(|lua, ()| async move {
+	let f = lua.create_async_function(|lua, opts: Option<Table>| async move {
 		if runtime!(lua)?.is_blocking() {
 			return Err("Cannot call `ui.hide()` while main thread is blocked".into_lua_err());
 		}
@@ -35,8 +35,9 @@ pub(super) fn hide(lua: &Lua) -> mlua::Result<Value> {
 			return Err("Cannot hide while already hidden".into_lua_err());
 		}
 
+		let alt_screen = opts.map(|t| t.raw_get("alt_screen")).transpose()?.unwrap_or(false);
 		let permit = YIELD_TO_SUBPROCESS.acquire().await.unwrap();
-		AppProxy::stop().await;
+		AppProxy::stop(alt_screen).await;
 
 		lua.set_named_registry_value("HIDE_PERMIT", Permit::new(permit, AppProxy::resume()))?;
 		lua.named_registry_value::<AnyUserData>("HIDE_PERMIT")

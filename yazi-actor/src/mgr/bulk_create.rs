@@ -49,7 +49,7 @@ impl Actor for BulkCreate {
 			.await;
 
 			let _permit = Permit::new(YIELD_TO_SUBPROCESS.acquire().await.unwrap(), AppProxy::resume());
-			AppProxy::stop().await;
+			AppProxy::stop(false).await;
 
 			let content = Local::regular(&tmp).read_to_string().await?;
 			Self::r#do(cwd, content.lines().filter_map(Entry::parse).collect()).await

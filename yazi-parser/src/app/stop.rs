@@ -3,14 +3,15 @@ use yazi_shared::event::{ActionCow, Replier};
 
 #[derive(Clone, Debug, Default)]
 pub struct StopForm {
-	pub replier: Option<Replier>,
+	pub alt_screen: bool,
+	pub replier:    Option<Replier>,
 }
 
 impl TryFrom<ActionCow> for StopForm {
 	type Error = anyhow::Error;
 
 	fn try_from(mut a: ActionCow) -> Result<Self, Self::Error> {
-		Ok(Self { replier: a.take_replier() })
+		Ok(Self { alt_screen: a.bool("alt_screen"), replier: a.take_replier() })
 	}
 }
 

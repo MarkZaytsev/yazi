@@ -9,7 +9,7 @@ use yazi_macro::writef;
 use yazi_proxy::AppProxy;
 use yazi_shim::cell::SyncCell;
 use yazi_term::{TERM, event::{Event, KeyEventKind}, stream::EventStream};
-use yazi_tty::{TTY, TtyWriter, sequence::{DisableBracketedPaste, DisableClipboard, DisableColorSchemeUpdates, DisableDrag, DisableDrop, DisableFocusChange, DisableMouseCapture, EnableBracketedPaste, EnableClipboard, EnableColorSchemeUpdates, EnableDrag, EnableDrop, EnableFocusChange, EnableMouseCapture, EnterAlternateScreen, If, LeaveAlternateScreen, PopKeyboardFlags, PushKeyboardFlags, RestoreCursorStyle, SetTitle, ShowCursor}};
+use yazi_tty::{TTY, TtyWriter, sequence::{BeginSyncUpdate, DisableBracketedPaste, DisableClipboard, DisableColorSchemeUpdates, DisableDrag, DisableDrop, DisableFocusChange, DisableMouseCapture, EnableBracketedPaste, EnableClipboard, EnableColorSchemeUpdates, EnableDrag, EnableDrop, EnableFocusChange, EnableMouseCapture, EnterAlternateScreen, If, LeaveAlternateScreen, PopKeyboardFlags, PushKeyboardFlags, RestoreCursorStyle, SetTitle, ShowCursor}};
 
 use crate::{RatermBackend, RatermOption, RatermState};
 
@@ -46,7 +46,7 @@ impl Raterm {
 		let mut stream = EventStream::from(&*TERM);
 		writef!(
 			TTY.writer(),
-			"{EnterAlternateScreen}{EnableBracketedPaste}{EnableClipboard}{EnableFocusChange}{EnableColorSchemeUpdates}{}{}{}{}",
+			"{BeginSyncUpdate}{EnterAlternateScreen}{EnableBracketedPaste}{EnableClipboard}{EnableFocusChange}{EnableColorSchemeUpdates}{}{}{}{}",
 			PushKeyboardFlags::DISAMBIGUATE_ESCAPE_CODES
 				| PushKeyboardFlags::REPORT_ALTERNATE_KEYS
 				| PushKeyboardFlags::REPORT_ALL_KEYS_AS_ESCAPE_CODES
@@ -78,10 +78,11 @@ impl Raterm {
 
 		_ = writef!(
 			TTY.writer(),
-			"{}{PopKeyboardFlags}{DisableDrop}{DisableDrag}{}{}{DisableColorSchemeUpdates}{DisableFocusChange}{DisableClipboard}{DisableBracketedPaste}{ShowCursor}{LeaveAlternateScreen}",
+			"{}{PopKeyboardFlags}{DisableDrop}{DisableDrag}{}{}{DisableColorSchemeUpdates}{DisableFocusChange}{DisableClipboard}{DisableBracketedPaste}{ShowCursor}{}",
 			If(state.mouse, DisableMouseCapture),
 			RestoreCursorStyle { blink: EMULATOR.cursor_blink.get(), shape: EMULATOR.cursor_shape.get() },
 			If(state.title, SetTitle("")),
+			If(state.alt_screen, LeaveAlternateScreen),
 		);
 
 		STATE.set(RatermState::default());

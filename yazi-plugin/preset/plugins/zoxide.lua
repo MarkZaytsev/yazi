@@ -36,7 +36,7 @@ function M:entry()
 		}
 	end
 
-	local permit = ui.hide()
+	local permit = ui.hide { alt_screen = true }
 	local target, err = M.run_with(st.cwd)
 	permit:drop()
 
@@ -64,6 +64,7 @@ function M.options()
 		"--border",
 		"--scrollbar=▌",
 		"--info=inline",
+		"--no-clear",
 		-- Display
 		"--tabstop=1",
 		-- Scripting

@@ -16,7 +16,7 @@ function M:entry()
 		return ya.notify { title = "Fzf", content = "Not supported under virtual filesystems", timeout = 5, level = "warn" }
 	end
 
-	local permit = ui.hide()
+	local permit = ui.hide { alt_screen = true }
 	local output, err = M.run_with(cwd, selected)
 
 	permit:drop()
@@ -47,7 +47,7 @@ end
 ---@return string?, Error?
 function M.run_with(cwd, selected)
 	local child, err = Command("fzf")
-		:arg("-m")
+		:arg({ "-m", "--no-clear" })
 		:cwd(tostring(cwd))
 		:stdin(#selected > 0 and Command.PIPED or Command.INHERIT)
 		:stdout(Command.PIPED)

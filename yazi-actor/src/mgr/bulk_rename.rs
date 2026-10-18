@@ -67,7 +67,7 @@ impl Actor for BulkRename {
 			.await;
 
 			let _permit = Permit::new(YIELD_TO_SUBPROCESS.acquire().await.unwrap(), AppProxy::resume());
-			AppProxy::stop().await;
+			AppProxy::stop(false).await;
 
 			let new: Vec<_> = Local::regular(&tmp)
 				.read_to_string()
