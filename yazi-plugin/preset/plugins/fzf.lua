@@ -19,15 +19,18 @@ function M:entry()
 	local permit = ui.hide { alt_screen = true }
 	local output, err = M.run_with(cwd, selected)
 
-	permit:drop()
-	if not output then
-		return ya.notify { title = "Fzf", content = tostring(err), timeout = 5, level = "error" }
+	if output then
+		M.apply(selected, M.split_urls(cwd, output))
+	else
+		ya.notify { title = "Fzf", content = tostring(err), timeout = 5, level = "error" }
 	end
+	permit:drop()
+end
 
-	local urls = M.split_urls(cwd, output)
-	if #urls == 0 then
-		return
-	elseif #urls == 1 then
+---@param selected Url[]
+---@param urls Url[]
+function M.apply(selected, urls)
+	if #urls == 1 then
 		local cha = #selected == 0 and fs.cha(urls[1])
 		return ya.emit(cha and cha.is_dir and "cd" or "reveal", { urls[1], raw = true })
 	end

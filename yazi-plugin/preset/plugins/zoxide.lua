@@ -38,13 +38,13 @@ function M:entry()
 
 	local permit = ui.hide { alt_screen = true }
 	local target, err = M.run_with(st.cwd)
-	permit:drop()
 
 	if not target then
 		ya.notify { title = "Zoxide", content = tostring(err), timeout = 5, level = "error" }
 	elseif target ~= "" then
 		ya.emit("cd", { target, raw = true })
 	end
+	permit:drop()
 end
 
 function M.options()
